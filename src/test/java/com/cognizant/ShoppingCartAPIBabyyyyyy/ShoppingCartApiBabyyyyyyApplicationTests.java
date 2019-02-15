@@ -43,7 +43,7 @@ public class ShoppingCartApiBabyyyyyyApplicationTests {
 
 	@After
 	public void after() {
-		itemRepository.deleteAll();
+		//itemRepository.deleteAll();
 	}
 
 	@Test
@@ -92,16 +92,10 @@ public class ShoppingCartApiBabyyyyyyApplicationTests {
 
 		expectedItem.setId(Integer.valueOf(generatedId));
 
-		String response = mvc.perform(get("/api/item"))
-				.andExpect(status().isOk())
-				.andReturn()
-				.getResponse()
-				.getContentAsString();
+		System.out.println("\n\ntestPostItem: expected: " + asJsonString(expectedItem));
 
-		List<Item> actual = objectMapper.readValue(response,
-				new TypeReference<List<Item>>(){});
-
-		Item actualItem = actual.get(0);
+		Item actualItem = itemRepository.findById(expectedItem.getId()).orElse(null);
+		System.out.println("testPostItem: actual: " + asJsonString(actualItem) + "\n");
 		assertEquals("GET response should match the record in the database.",
 				expectedItem, actualItem);
 	}

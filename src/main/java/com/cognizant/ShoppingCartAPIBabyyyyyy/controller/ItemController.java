@@ -37,7 +37,7 @@ public class ItemController {
         return item;
     }
 
-    @PutMapping()
+    @PutMapping
     public Item putItem(@RequestBody Item itemToPost) {
         return repository.save(itemToPost);
     }

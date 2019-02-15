@@ -1,9 +1,6 @@
 package com.cognizant.ShoppingCartAPIBabyyyyyy.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Objects;
 @Entity
 public class Item {
@@ -13,6 +10,9 @@ public class Item {
     private String name;
     private double price;
     private boolean onSale;
+
+    @OneToOne(mappedBy = "item")
+    LineItem lineItem;
 
     public Item() {
     }
