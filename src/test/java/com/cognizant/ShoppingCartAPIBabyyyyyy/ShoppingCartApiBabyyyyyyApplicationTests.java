@@ -43,7 +43,7 @@ public class ShoppingCartApiBabyyyyyyApplicationTests {
 
 	@After
 	public void after() {
-		//itemRepository.deleteAll();
+		itemRepository.deleteAll();
 	}
 
 	@Test
@@ -107,15 +107,7 @@ public class ShoppingCartApiBabyyyyyyApplicationTests {
 		expectedItem.setName("Thomas Fowler");
 		expectedItem.setPrice(1000f);
 
-		String generatedId = mvc.perform(post("/api/item")
-				.content(asJsonString(expectedItem))
-				.contentType(MediaType.APPLICATION_JSON)
-				.accept(MediaType.APPLICATION_JSON))
-				.andReturn()
-				.getResponse()
-				.getContentAsString();
-
-		expectedItem.setId(Integer.valueOf(generatedId));
+		expectedItem = itemRepository.save(expectedItem);
 
 		//System.out.println(generatedId + "\n\n\n");
 

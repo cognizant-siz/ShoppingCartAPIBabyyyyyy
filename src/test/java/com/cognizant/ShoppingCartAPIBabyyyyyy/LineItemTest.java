@@ -41,11 +41,13 @@ public class LineItemTest {
     @Before
     public void before() {
         lineItemRepository.deleteAll();
+        itemRepository.deleteAll();
     }
 
     @After
     public void after() {
         lineItemRepository.deleteAll();
+        itemRepository.deleteAll();
     }
 
     @Test
