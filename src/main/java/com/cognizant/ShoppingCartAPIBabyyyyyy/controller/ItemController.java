@@ -14,12 +14,12 @@ public class ItemController {
     private ItemRepository repository;
 
     @GetMapping
-    public List<Item> getAllUsers() {
+    public List<Item> getAllItems() {
         return (List<Item>)repository.findAll();
     }
 
     @PostMapping
-    public String postUser(@RequestBody Item itemToPost) {
+    public String postItem(@RequestBody Item itemToPost) {
         Item saveResponse = repository.save(itemToPost);
 
         if (saveResponse == null)
@@ -31,9 +31,19 @@ public class ItemController {
     }
 
     @GetMapping("/{id}")
-    public Item getUserById(@PathVariable int id) {
+    public Item getItemById(@PathVariable int id) {
         Item item = repository.findById(id).orElse(new Item("Item with Id " + id + " not found."));
 
         return item;
+    }
+
+    @PutMapping()
+    public Item putItem(@RequestBody Item itemToPost) {
+        return repository.save(itemToPost);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteItemById(@PathVariable int id) {
+        repository.deleteById(id);
     }
 }

@@ -20,8 +20,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
@@ -124,7 +123,7 @@ public class ShoppingCartApiBabyyyyyyApplicationTests {
 
 		expectedItem.setId(Integer.valueOf(generatedId));
 
-		System.out.println(generatedId + "\n\n\n");
+		//System.out.println(generatedId + "\n\n\n");
 
 		String response = mvc.perform(get("/api/item/" + expectedItem.getId()))
 				.andExpect(status().isOk())
@@ -137,6 +136,61 @@ public class ShoppingCartApiBabyyyyyyApplicationTests {
 
 		assertEquals("GET response should match the record in the database.",
 				expectedItem, actual);
+	}
+
+	@Test
+	public void testPutItemById() throws Exception {
+		// Setup
+		Item expectedItem = new Item();
+		expectedItem.setName("Thomas Fowler");
+		expectedItem.setPrice(1000f);
+
+		String generatedId = mvc.perform(post("/api/item")
+				.content(asJsonString(expectedItem))
+				.contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON))
+				.andReturn()
+				.getResponse()
+				.getContentAsString();
+
+		expectedItem.setId(Integer.valueOf(generatedId));
+		expectedItem.setName("item1");
+		//System.out.println(generatedId + "\n\n\n");
+
+		String response = mvc.perform(put("/api/item/")
+				.content(asJsonString(expectedItem))
+				.contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				.andReturn()
+				.getResponse()
+				.getContentAsString();
+
+		Item actual = objectMapper.readValue(response,
+				new TypeReference<Item>(){});
+
+		assertEquals("PUT response should match the record in the database.",
+				expectedItem, actual);
+	}
+
+	@Test
+	public void testDeleteItemById() throws Exception {
+		// Setup
+		Item expectedItemToDelete = new Item();
+		expectedItemToDelete.setName("Thomas Fowler");
+		expectedItemToDelete.setPrice(1000f);
+
+		int generatedId = itemRepository.save(expectedItemToDelete).getId();
+
+		expectedItemToDelete.setId(generatedId);
+
+		//System.out.println(generatedId + "\n\n\n");
+
+		mvc.perform(delete("/api/item/" + generatedId));
+
+		Item response = itemRepository.findById(generatedId).orElse(null);
+
+		Assert.assertNull("Delete item from database.", response);
 	}
 
 	public static String asJsonString(final Object obj) {
