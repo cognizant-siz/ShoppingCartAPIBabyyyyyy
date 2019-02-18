@@ -54,5 +54,12 @@ public class LineItem {
         return Objects.hash(id);
     }
 
-
+    @Override
+    public String toString() {
+        return "LineItem{" +
+                "id=" + id +
+                ", quantity=" + quantity +
+                ", item=" + item +
+                '}';
+    }
 }

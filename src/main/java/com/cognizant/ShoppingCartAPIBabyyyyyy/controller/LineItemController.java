@@ -5,9 +5,7 @@ import com.cognizant.ShoppingCartAPIBabyyyyyy.model.LineItem;
 import com.cognizant.ShoppingCartAPIBabyyyyyy.repository.ItemRepository;
 import com.cognizant.ShoppingCartAPIBabyyyyyy.repository.LineItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -20,5 +18,15 @@ public class LineItemController {
     @GetMapping
     public List<LineItem> getAllLineItems() {
         return (List<LineItem>)repository.findAll();
+    }
+
+    @PostMapping
+    public LineItem postLineItem(@RequestBody LineItem lineItem) {
+        return repository.save(lineItem);
+    }
+
+    @PutMapping
+    public LineItem putLineItem(@RequestBody LineItem lineItem) {
+        return repository.save(lineItem);
     }
 }

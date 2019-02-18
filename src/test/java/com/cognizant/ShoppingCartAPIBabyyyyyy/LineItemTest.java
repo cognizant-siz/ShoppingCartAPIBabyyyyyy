@@ -13,14 +13,16 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.junit.Assert.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static com.cognizant.ShoppingCartAPIBabyyyyyy.ShoppingCartApiBabyyyyyyApplicationTests.asJsonString;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -77,6 +79,66 @@ public class LineItemTest {
 
         LineItem actualLineItem = actual.get(0);
         assertEquals("GET response should match the record in the database.",
+                expectedLineItem, actualLineItem);
+    }
+
+    @Test
+    public void testPostLineItem() throws Exception {
+        LineItem expectedLineItem = new LineItem();
+        Item item = new Item("Turnip");
+        itemRepository.save(item);
+        expectedLineItem.setItem(item);
+        expectedLineItem.setQuantity(3);
+        expectedLineItem.setId(-1);
+
+        String response = mvc.perform(post("/api/lineItem")
+                .content(asJsonString(expectedLineItem))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        LineItem actualLineItem = objectMapper.readValue(response,
+                new TypeReference<LineItem>(){});
+
+        assertNotEquals("Post response should generate a id and not match the original expected.",
+                expectedLineItem.getId(), actualLineItem.getId());
+
+        expectedLineItem.setId(actualLineItem.getId());
+
+        assertEquals("POST response should match the record in the database.",
+                expectedLineItem, actualLineItem);
+    }
+
+    @Test
+    public void testPutLineItem() throws Exception {
+        LineItem expectedLineItem = new LineItem();
+        Item item = new Item("Turnip");
+        itemRepository.save(item);
+        expectedLineItem.setItem(item);
+        expectedLineItem.setQuantity(3);
+
+        System.out.println(asJsonString(expectedLineItem));
+
+        lineItemRepository.save(expectedLineItem);
+
+        expectedLineItem.setQuantity(12);
+
+        System.out.println(asJsonString(expectedLineItem));
+
+        String response = mvc.perform(put("/api/lineItem")
+                .content(asJsonString(expectedLineItem))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        LineItem actualLineItem = objectMapper.readValue(response,
+                new TypeReference<LineItem>(){});
+
+        assertEquals("PUT response should match the record in the database with values that were changed.",
                 expectedLineItem, actualLineItem);
     }
 }
