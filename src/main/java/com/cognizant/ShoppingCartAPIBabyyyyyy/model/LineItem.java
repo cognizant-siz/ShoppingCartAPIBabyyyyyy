@@ -1,5 +1,7 @@
 package com.cognizant.ShoppingCartAPIBabyyyyyy.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import javax.persistence.*;
 import java.util.Objects;
 
@@ -14,6 +16,11 @@ public class LineItem {
     @JoinColumn(name = "item", nullable = false)
     private Item item;
 
+    @OneToOne
+    @JoinColumn(name="cart_id", nullable=false)
+    @JsonBackReference
+    private Cart cart;
+
     public LineItem() {
     }
 
@@ -23,6 +30,14 @@ public class LineItem {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public Cart getCart() {
+        return cart;
+    }
+
+    public void setCart(Cart cart) {
+        this.cart = cart;
     }
 
     public int getQuantity() {
